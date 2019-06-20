@@ -11,7 +11,7 @@ const DAOFactory = artifacts.require('DAOFactory')
 const ExecutionTarget = artifacts.require('ExecutionTarget')
 const EVMScriptRegistryFactory = artifacts.require('EVMScriptRegistryFactory')
 
-const INTENT_STATE = { SUBMITTED: 0, APPROVED: 1, REJECTED: 2 }
+const INTENT_STATE = { PENDING: 0, APPROVED: 1, REJECTED: 2 }
 
 contract('Approvals', ([_, root, user, moderator, someone]) => {
   let dao, acl, approvals
@@ -81,7 +81,7 @@ contract('Approvals', ([_, root, user, moderator, someone]) => {
           intentId = getEventArgument(receipt, 'IntentSubmitted', 'intentId')
 
           const [state, executionScript] = await approvals.getIntent(intentId)
-          assert.equal(state.toString(), INTENT_STATE.SUBMITTED, 'intent state does not match')
+          assert.equal(state.toString(), INTENT_STATE.PENDING, 'intent state does not match')
           assert.equal(executionScript, script, 'intent execution script does not match')
         })
 
@@ -132,7 +132,7 @@ contract('Approvals', ([_, root, user, moderator, someone]) => {
         context('when the sender is allowed to approve intents', () => {
           const from = moderator
 
-          context('when the given intent is submitted', () => {
+          context('when the given intent is pending', () => {
             it('approves an intent', async () =>  {
               await approvals.approve(intentId, { from })
 
@@ -225,7 +225,7 @@ contract('Approvals', ([_, root, user, moderator, someone]) => {
         context('when the sender is allowed to reject intents', () => {
           const from = moderator
 
-          context('when the given intent is submitted', () => {
+          context('when the given intent is pending', () => {
             it('rejects an intent', async () =>  {
               await approvals.reject(intentId, { from })
 
@@ -379,7 +379,7 @@ contract('Approvals', ([_, root, user, moderator, someone]) => {
 
         it('creates an intent', async () =>  {
           const [state, executionScript] = await approvals.getIntent(intentId)
-          assert.equal(state.toString(), INTENT_STATE.SUBMITTED, 'intent state does not match')
+          assert.equal(state.toString(), INTENT_STATE.PENDING, 'intent state does not match')
           assert.equal(executionScript, script, 'intent execution script does not match')
         })
 

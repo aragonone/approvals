@@ -17,7 +17,7 @@ contract Approvals is IForwarder, AragonApp {
     string private constant ERROR_INTENT_DOES_NOT_EXIST = "APPROVALS_INTENT_DOES_NOT_EXIST";
     string private constant ERROR_INTENT_ALREADY_DECIDED = "APPROVALS_INTENT_ALREADY_DECIDED";
 
-    enum IntentState { Submitted, Approved, Rejected }
+    enum IntentState { Pending, Approved, Rejected }
 
     struct Intent {
         IntentState state;
@@ -31,9 +31,9 @@ contract Approvals is IForwarder, AragonApp {
     event IntentApproved(uint256 indexed intentId, address indexed moderator);
     event IntentRejected(uint256 indexed intentId, address indexed moderator);
 
-    modifier intentSubmitted(uint256 intentId) {
+    modifier intentPending(uint256 intentId) {
         require(_intentExists(intentId), ERROR_INTENT_DOES_NOT_EXIST);
-        require(intents[intentId].state == IntentState.Submitted, ERROR_INTENT_ALREADY_DECIDED);
+        require(intents[intentId].state == IntentState.Pending, ERROR_INTENT_ALREADY_DECIDED);
         _;
     }
 
@@ -61,7 +61,7 @@ contract Approvals is IForwarder, AragonApp {
     * @notice Approve intent #`intentId`
     * @param intentId Intent identification number
     */
-    function approve(uint256 intentId) external auth(APPROVE_ROLE) intentSubmitted(intentId) {
+    function approve(uint256 intentId) external auth(APPROVE_ROLE) intentPending(intentId) {
         _approve(intentId);
     }
 
@@ -69,7 +69,7 @@ contract Approvals is IForwarder, AragonApp {
     * @notice Reject intent #`intentId`
     * @param intentId Intent identification number
     */
-    function reject(uint256 intentId) external auth(REJECT_ROLE) intentSubmitted(intentId) {
+    function reject(uint256 intentId) external auth(REJECT_ROLE) intentPending(intentId) {
         _reject(intentId);
     }
 
@@ -116,7 +116,7 @@ contract Approvals is IForwarder, AragonApp {
 
     function _submit(bytes script) internal {
         emit IntentSubmitted(nextIntent, msg.sender);
-        intents[nextIntent++] = Intent({ state: IntentState.Submitted, executionScript: script });
+        intents[nextIntent++] = Intent({ state: IntentState.Pending, executionScript: script });
     }
 
     function _approve(uint256 intentId) internal {
