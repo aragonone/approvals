@@ -1,0 +1,30 @@
+{
+  "environments": {
+    "default": {
+      "appName": "approvals.aragonpm.eth",
+      "network": "rpc"
+    },
+    "rinkeby": {
+      "appName": "approvals.aragonpm.eth",
+      "network": "rinkeby"
+    }
+  },
+  "roles": [
+    {
+      "name": "Submit new intents",
+      "id": "SUBMIT_ROLE",
+      "params": []
+    },
+    {
+      "name": "Approve intents",
+      "id": "APPROVE_ROLE",
+      "params": []
+    },
+    {
+      "name": "Reject intents",
+      "id": "REJECT_ROLE",
+      "params": []
+    }
+  ],
+  "path": "contracts/Approvals.sol"
+}
