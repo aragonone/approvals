@@ -1,15 +1,6 @@
-import Aragon, { events } from '@aragon/api'
-import { addressesEqual } from './web3-utils'
-import voteSettings from './vote-settings'
-import { voteTypeFromContractEnum } from './vote-utils'
-import { EMPTY_CALLSCRIPT } from './evmscript-utils'
-import tokenDecimalsAbi from './abi/token-decimals.json'
-import tokenSymbolAbi from './abi/token-symbol.json'
-
-const tokenAbi = [].concat(tokenDecimalsAbi, tokenSymbolAbi)
+import Aragon from '@aragon/api'
 
 const app = new Aragon()
-
 
 async function initialize(tokenAddr) {
   return app.store(

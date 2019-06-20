@@ -8,7 +8,6 @@ import {
 } from './vote-utils'
 import { useNow, usePromise } from './utils-hooks'
 import { VOTE_ABSENT } from './vote-types'
-import TOKEN_ABI from './abi/token-balanceOfAt.json'
 
 // Get the votes array ready to be used in the app.
 export function useVotes() {
@@ -45,7 +44,7 @@ export function useTokenContract() {
   useEffect(() => {
     // We assume there is never any reason to set the contract back to null.
     if (api && tokenAddress) {
-      setContract(api.external(tokenAddress, TOKEN_ABI))
+      setContract(api.external(tokenAddress, {}))
     }
   }, [api, tokenAddress])
 
