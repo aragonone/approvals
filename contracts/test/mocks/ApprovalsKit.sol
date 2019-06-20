@@ -22,6 +22,10 @@ import "@aragon/apps-token-manager/contracts/TokenManager.sol";
 import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 
 
+interface Kits {
+    function fac() public returns (DAOFactory);
+}
+
 contract ApprovalsKit is APMNamehash {
     uint64 internal constant PCT = 10 ** 16;
     address internal constant ANY_ENTITY = address(-1);
@@ -40,7 +44,7 @@ contract ApprovalsKit is APMNamehash {
     constructor(ENS _ens) public {
         ens = _ens;
         bytes32 bareKit = apmNamehash("bare-kit");
-        daoFactory = ApprovalsKit(latestVersionAppBase(bareKit)).daoFactory();
+        daoFactory = Kits(latestVersionAppBase(bareKit)).fac();
         miniMeTokenFactory = new MiniMeTokenFactory();
     }
 
