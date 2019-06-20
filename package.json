@@ -1,0 +1,62 @@
+{
+  "name": "@aragon/future-apps-approvals",
+  "version": "0.0.1",
+  "description": "",
+  "license": "(GPL-3.0-or-later OR AGPL-3.0-or-later)",
+  "author": "Aragon Association <legal@aragon.org>",
+  "keywords": [
+    "app",
+    "aragon",
+    "dao",
+    "approvals"
+  ],
+  "contributors": [
+    "Facu Spagnuolo <facu@aragon.one>",
+    "Gorka Ludlow <gorka@aragon.one>",
+    "Luke Dunkan <luke@aragon.one>"
+  ],
+  "files": [
+    "/abi",
+    "/arapp.json",
+    "/build",
+    "/contracts",
+    "/test"
+  ],
+  "scripts": {
+    "compile": "truffle compile",
+    "build": "cd app && npm run build",
+    "apm:publish:major": "aragon apm publish major --files app/build/",
+    "apm:publish:minor": "aragon apm publish minor --files app/build/",
+    "apm:publish:patch": "aragon apm publish patch --files app/build/",
+    "lint": "solium --dir ./contracts",
+    "dev": "npm start -- --http localhost:8001 --http-served-from ./app/build",
+    "dev:reset": "npm run dev -- --reset",
+    "start": "aragon run --accounts 9 --environment default --files app/build/",
+    "test": "TRUFFLE_TEST=true npm run ganache-cli:test",
+    "test:gas": "GAS_REPORTER=true npm run test",
+    "coverage": "SOLIDITY_COVERAGE=true npm run ganache-cli:test",
+    "truffle:dev": "truffle dev",
+    "ganache-cli:test": "./node_modules/@aragon/test-helpers/ganache-cli.sh",
+    "prepare": "npx apps-shared-scripts-prepare",
+    "install:frontend": "cd app && npm install",
+    "abi:extract": "truffle-extract --output abi/ --keys abi",
+    "prepublishOnly": "truffle compile --all && npm run abi:extract -- --no-compile"
+  },
+  "dependencies": {
+    "@aragon/os": "4.2.0"
+  },
+  "devDependencies": {
+    "@aragon/apps-shared-migrations": "1.0.0",
+    "@aragon/apps-shared-minime": "1.0.0",
+    "@aragon/apps-shared-scripts": "^1.0.0",
+    "@aragon/cli": "~5.6.0",
+    "@aragon/test-helpers": "^1.2.0",
+    "eth-gas-reporter": "^0.2.0",
+    "ethereumjs-testrpc-sc": "^6.1.6",
+    "ganache-cli": "^6.4.3",
+    "solidity-coverage": "^0.5.11",
+    "solium": "^1.2.3",
+    "truffle": "4.1.14",
+    "truffle-extract": "^1.2.1"
+  }
+}
