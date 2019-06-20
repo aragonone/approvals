@@ -42,13 +42,14 @@
     "abi:extract": "truffle-extract --output abi/ --keys abi",
     "prepublishOnly": "truffle compile --all && npm run abi:extract -- --no-compile"
   },
-  "dependencies": {
-    "@aragon/os": "4.2.0"
-  },
   "devDependencies": {
+    "@aragon/os": "4.2.0",
+    "@aragon/apps-voting": "^2.1.0",
+    "@aragon/apps-token-manager": "^2.1.0",
     "@aragon/apps-shared-migrations": "1.0.0",
     "@aragon/apps-shared-minime": "1.0.0",
     "@aragon/apps-shared-scripts": "^1.0.0",
+    "@aragon/cli": "~5.6.0",
     "@aragon/test-helpers": "^1.2.0",
     "eth-gas-reporter": "^0.2.0",
     "ethereumjs-testrpc-sc": "^6.1.6",
