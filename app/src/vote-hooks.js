@@ -9,6 +9,7 @@ import {
 import { useNow, usePromise } from './utils-hooks'
 import { VOTE_ABSENT } from './vote-types'
 
+
 // Get the votes array ready to be used in the app.
 export function useVotes() {
   const { votes, connectedAccountVotes } = useAppState()
