@@ -2,8 +2,8 @@ import React from 'react'
 import { SyncIndicator, Main } from '@aragon/ui'
 
 import EmptyState from './screens/EmptyState'
-import Votes from './screens/Votes'
-import VotePanel from './components/VotePanel'
+import IntentsScreen from './screens/Intents'
+import IntentPanel from './components/IntentPanel'
 import AppLayout from './components/AppLayout'
 
 import { IdentityProvider } from './identity-manager'
@@ -17,10 +17,8 @@ function App() {
     selectedIntent,
     actions,
     selectIntent,
-    newIntentPanel,
     selectedIntentPanel,
   } = useAppLogic()
-
 
   return (
     <div css="min-width: 320px">
@@ -30,13 +28,13 @@ function App() {
           title="Approvals"
         >
           {intents.length > 0 ? (
-            <Votes intents={intents} onSelectIntent={selectIntent} />
+            <IntentsScreen intents={intents} onSelectIntent={selectIntent} />
           ) : (
-            !isSyncing && <EmptyState onActivate={newIntentPanel.requestOpen} />
+            !isSyncing && <EmptyState />
           )}
         </AppLayout>
 
-        <VotePanel
+        <IntentPanel
           intent={selectedIntent}
           onApprove={actions.approve}
           onReject={actions.reject}

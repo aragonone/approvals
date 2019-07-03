@@ -16,10 +16,8 @@ import { format } from 'date-fns'
 import { INTENT_REJECT, INTENT_APPROVE } from '../intent-types'
 import { pluralize } from '../utils'
 import { useExtendedVoteData } from '../vote-hooks'
-import VoteStatus from './VoteStatus'
-import VoteSuccess from './VoteSuccess'
-import VoteText from './VoteText'
-import SummaryBar from './SummaryBar'
+import IntentStatus from './IntentStatus'
+import IntentText from './IntentText'
 
 const formatDate = date =>
   `${format(date, 'dd/MM/yy')} at ${format(date, 'HH:mm')} UTC`
@@ -27,7 +25,7 @@ const formatDate = date =>
 // styled-component `css` transform doesn’t play well with attached components.
 const Action = Info.Action
 
-const VotePanel = React.memo(({ panelState, intent, onApprove, onReject }) => (
+const IntentPanel = React.memo(({ panelState, intent, onApprove, onReject }) => (
   <SidePanel
     title={
       intent ? `Intent #${intent.intentId} ` : ''
@@ -37,7 +35,7 @@ const VotePanel = React.memo(({ panelState, intent, onApprove, onReject }) => (
     onTransitionEnd={panelState.onTransitionEnd}
   >
     {intent && (
-      <VotePanelContent
+      <IntentPanelContent
         intent={intent}
         onApprove={onApprove}
         onReject={onReject}
@@ -47,7 +45,7 @@ const VotePanel = React.memo(({ panelState, intent, onApprove, onReject }) => (
   </SidePanel>
 ))
 
-const VotePanelContent = React.memo(
+const IntentPanelContent = React.memo(
   ({ onReject, onApprove, panelOpened, intent: intent }) => {
     const { tokenDecimals, tokenSymbol } = useAppState()
 
@@ -67,7 +65,7 @@ const VotePanelContent = React.memo(
     const description = "Intent description"
     return (
       <React.Fragment>
-        <VoteStatus intent={intent}/><br/>
+        <IntentStatus intent={intent}/><br/>
         <SidePanelSeparator />
         <Part>
           {description && (
@@ -76,7 +74,7 @@ const VotePanelContent = React.memo(
                 <Label>Description</Label>
               </h2>
               <p>
-                <VoteText text={description} />
+                <IntentText text={description} />
               </p>
             </React.Fragment>
           )}
@@ -96,7 +94,7 @@ const VotePanelContent = React.memo(
         </Part>
         <SidePanelSeparator />
 
-        <VotePanelContentActions
+        <IntentPanelContentActions
           onReject={handleReject}
           onApprove={handleApprove}
           intent={intent}
@@ -106,7 +104,7 @@ const VotePanelContent = React.memo(
   }
 )
 
-const VotePanelContentActions = React.memo(
+const IntentPanelContentActions = React.memo(
   ({ intent, onApprove, onReject }) => {
     const connectedAccount = useConnectedAccount()
 
@@ -197,4 +195,4 @@ const VotingButton = styled(Button)`
   }
 `
 
-export default VotePanel
+export default IntentPanel

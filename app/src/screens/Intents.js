@@ -2,7 +2,7 @@ import React from 'react'
 import VotingCard from '../components/VotingCard/VotingCard'
 import VotingCardGroup from '../components/VotingCard/VotingCardGroup'
 
-const Votes = React.memo(({ intents, onSelectIntent }) => {
+const Intents = React.memo(({ intents, onSelectIntent }) => {
   const sortedIntents = intents.sort((a, b) => {
     // Order by descending intent id
     return b.intentId - a.intentId
@@ -31,4 +31,4 @@ const Votes = React.memo(({ intents, onSelectIntent }) => {
   )
 })
 
-export default Votes
+export default Intents

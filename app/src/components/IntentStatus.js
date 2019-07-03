@@ -25,7 +25,7 @@ const ATTRIBUTES = {
   },
 }
 
-const VoteStatus = ({ cardStyle, intent }) => {
+const IntentStatus = ({ cardStyle, intent }) => {
   const status = getIntentStatus(intent)
   const { Icon, color, bold } = ATTRIBUTES[status]
   const label = ATTRIBUTES[status].label
@@ -53,4 +53,4 @@ const StatusLabel = styled.span`
   margin-left: ${({ spaced }) => (spaced ? '5px' : '0')};
 `
 
-export default VoteStatus
+export default IntentStatus

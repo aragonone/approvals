@@ -3,9 +3,8 @@ import styled from 'styled-components'
 import { format } from 'date-fns'
 import { Badge, Timer, Text, Button, theme } from '@aragon/ui'
 import { INTENT_APPROVE, INTENT_REJECT } from '../../intent-types'
-import VotingOptions from './VotingOptions'
-import VoteText from '../VoteText'
-import VoteStatus from '../VoteStatus'
+import IntentText from '../IntentText'
+import IntentStatus from '../IntentStatus'
 import { isVoteAction } from '../../vote-utils'
 
 function getOptions(yea, nay, connectedAccountVote) {
@@ -42,7 +41,7 @@ const VotingCard = React.memo(
     }, [intentId, onOpen])
 
     const action = isVoteAction(intent)
-    //TODO: On VoteText: change string for description variable when ready
+    //TODO: On IntentText: change string for description variable when ready
     return (
       <section
         css={`
@@ -52,14 +51,14 @@ const VotingCard = React.memo(
         `}
       >
         <Header>
-          <VoteStatus intent={intent} cardStyle />
+          <IntentStatus intent={intent} cardStyle />
         </Header>
         <Card>
           <Content>
             <Label>
               <Text color={theme.textTertiary}>#{intentId} </Text>
               <span>
-                <VoteText text={"Intent description"} />
+                <IntentText text={"Intent description"} />
               </span>
             </Label>
           </Content>
@@ -70,16 +69,8 @@ const VotingCard = React.memo(
               flex-shrink: 0;
             `}
           >
-            <div
-              css={`
-                display: flex;
-                align-items: center;
-              `}
-            >
-              {action ? <BadgeAction /> : <BadgeQuestion />}
-            </div>
             <Button compact mode="outline" onClick={handleOpen}>
-              View vote
+              View intent
             </Button>
           </div>
         </Card>
@@ -100,18 +91,6 @@ const VotingCard = React.memo(
 VotingCard.defaultProps = {
   onOpen: () => {},
 }
-
-const BadgeQuestion = () => (
-  <Badge background="rgba(37, 49, 77, 0.16)" foreground="rgba(37, 49, 77, 1)">
-    Question
-  </Badge>
-)
-
-const BadgeAction = () => (
-  <Badge background="rgba(245, 166, 35, 0.1)" foreground="rgba(156, 99, 7, 1)">
-    Action
-  </Badge>
-)
 
 const OptionLabel = ({ label, isConnectedAccount }) => (
   <span>

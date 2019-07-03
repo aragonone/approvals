@@ -6,7 +6,7 @@ import LocalIdentityBadge from '../components/LocalIdentityBadge/LocalIdentityBa
 
 // Render a text associated to a vote.
 // Usually vote.data.metadata and vote.data.description.
-const VoteText = React.memo(
+const IntentText = React.memo(
   ({ text = '' }) => {
     // If there is no text, the component doesn’t render anything.
     if (!text.trim()) {
@@ -36,8 +36,8 @@ const VoteText = React.memo(
   (prevProps, nextProps) => prevProps.text === nextProps.text
 )
 
-VoteText.propTypes = {
+IntentText.propTypes = {
   text: PropTypes.string,
 }
 
-export default VoteText
+export default IntentText
