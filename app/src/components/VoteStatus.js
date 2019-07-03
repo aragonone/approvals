@@ -1,52 +1,34 @@
 import React from 'react'
 import styled from 'styled-components'
 import { theme, IconTime, IconCross, IconCheck } from '@aragon/ui'
-import { useSettings } from '../vote-settings-manager'
-import {
-  VOTE_STATUS_ONGOING,
-  VOTE_STATUS_REJECTED,
-  VOTE_STATUS_ACCEPTED,
-  VOTE_STATUS_EXECUTED,
-} from '../vote-types'
-import { isVoteAction, getVoteStatus } from '../vote-utils'
+import { getIntentStatus } from '../vote-utils'
+import { INTENT_STATUS_PENDING, INTENT_STATUS_REJECTED, INTENT_STATUS_APPROVED } from '../vote-types'
 
 const ATTRIBUTES = {
-  [VOTE_STATUS_ONGOING]: {
-    label: 'Ongoing',
+  [INTENT_STATUS_PENDING]: {
+    label: 'Pending',
     Icon: IconTime,
     color: theme.textTertiary,
     bold: false,
   },
-  [VOTE_STATUS_ACCEPTED]: {
-    label: 'Pending enactment',
-    Icon: null,
+  [INTENT_STATUS_APPROVED]: {
+    label: 'Approved',
+    Icon: IconCheck,
     color: theme.textTertiary,
-    bold: false,
+    bold: true,
   },
-  [VOTE_STATUS_REJECTED]: {
+  [INTENT_STATUS_REJECTED]: {
     label: 'Rejected',
     Icon: IconCross,
     color: theme.negative,
     bold: true,
   },
-  [VOTE_STATUS_EXECUTED]: {
-    label: 'Enacted',
-    Icon: IconCheck,
-    color: theme.positive,
-    bold: true,
-  },
 }
 
-const VoteStatus = ({ cardStyle, vote }) => {
-  const settings = useSettings()
-  const status = getVoteStatus(vote, settings.pctBase)
+const VoteStatus = ({ cardStyle, intent }) => {
+  const status = getIntentStatus(intent)
   const { Icon, color, bold } = ATTRIBUTES[status]
-
-  const label =
-    !isVoteAction(vote) &&
-    (status === VOTE_STATUS_EXECUTED || status === VOTE_STATUS_ACCEPTED)
-      ? 'Accepted'
-      : ATTRIBUTES[status].label
+  const label = ATTRIBUTES[status].label
 
   return (
     <Main

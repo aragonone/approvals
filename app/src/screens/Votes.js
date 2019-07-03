@@ -2,28 +2,27 @@ import React from 'react'
 import VotingCard from '../components/VotingCard/VotingCard'
 import VotingCardGroup from '../components/VotingCard/VotingCardGroup'
 
-const Votes = React.memo(({ votes, onSelectVote }) => {
-  const sortedVotes = votes.sort((a, b) => {
-    const dateDiff = b.data.endDate - a.data.endDate
-    // Order by descending voteId if there's no end date difference
-    return dateDiff !== 0 ? dateDiff : b.voteId - a.voteId
+const Votes = React.memo(({ intents, onSelectIntent }) => {
+  const sortedIntents = intents.sort((a, b) => {
+    // Order by descending intent id
+    return b.intentId - a.intentId
   })
 
-  const openVotes = sortedVotes.filter(vote => vote.data.open)
-  const closedVotes = sortedVotes.filter(vote => !openVotes.includes(vote))
-  const votingGroups = [['Open votes', openVotes], ['Past votes', closedVotes]]
+  const pendingIntents = sortedIntents.filter(intent => intent.data.status === 'pending')
+  const closedIntents = sortedIntents.filter(intent => !pendingIntents.includes(intent))
+  const intentGroups = [['Pending intents', pendingIntents], ['Past intents', closedIntents]]
 
   return (
     <React.Fragment>
-      {votingGroups.map(([groupName, votes]) =>
-        votes.length ? (
+      {intentGroups.map(([groupName, intents]) =>
+        intents.length ? (
           <VotingCardGroup
             title={groupName}
-            count={votes.length}
+            count={intents.length}
             key={groupName}
           >
-            {votes.map(vote => (
-              <VotingCard key={vote.voteId} vote={vote} onOpen={onSelectVote} />
+            {intents.map(intent => (
+              <VotingCard key={intent.intentId} intent={intent} onOpen={onSelectIntent} />
             ))}
           </VotingCardGroup>
         ) : null

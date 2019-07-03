@@ -4,36 +4,32 @@ import {
   getCanExecute,
   getCanVote,
   getUserBalance,
-  isVoteOpen,
+  isIntentPending,
 } from './vote-utils'
-import { useNow, usePromise } from './utils-hooks'
+import { usePromise } from './utils-hooks'
 import { VOTE_ABSENT } from './vote-types'
 
 
 // Get the votes array ready to be used in the app.
-export function useVotes() {
-  const { votes, connectedAccountVotes } = useAppState()
-  const now = useNow()
-
-  const openedStates = (votes || []).map(v => isVoteOpen(v, now))
-  const openedStatesKey = openedStates.join('')
+export function useIntents() {
+  const { intents, connectedAccountIntents } = useAppState()
+  const pendingStates = (intents || []).map(i => isIntentPending(i))
+  const pendingStatesKey = pendingStates.join('')
 
   return useMemo(() => {
-    if (!votes) {
-      return []
-    }
-    return votes.map((vote, i) => ({
-      ...vote,
+    if (!intents) return []
+    return intents.map((intent, i) => ({
+      ...intent,
       data: {
-        ...vote.data,
+        ...intent.data,
 
-        metadata: vote.data.metadata || '',
-        description: vote.data.description || '',
-        open: openedStates[i],
+        metadata: intent.data.metadata || '',
+        description: intent.data.description || '',
+        open: pendingStates[i],
       },
-      connectedAccountVote: connectedAccountVotes[vote.voteId] || VOTE_ABSENT,
+      connectedAccountIntents: connectedAccountIntents[intent.intentId] || VOTE_ABSENT,
     }))
-  }, [votes, connectedAccountVotes, openedStatesKey])
+  }, [intents, connectedAccountIntents, pendingStatesKey])
 }
 
 // Load and returns the token contract, or null if not loaded yet.

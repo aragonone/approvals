@@ -4,9 +4,7 @@ import { SyncIndicator, Main } from '@aragon/ui'
 import EmptyState from './screens/EmptyState'
 import Votes from './screens/Votes'
 import VotePanel from './components/VotePanel'
-import NewVotePanel from './components/NewVotePanel'
 import AppLayout from './components/AppLayout'
-import NewVoteIcon from './components/NewVoteIcon'
 
 import { IdentityProvider } from './identity-manager'
 import { SettingsProvider } from './vote-settings-manager'
@@ -15,12 +13,12 @@ import { AppLogicProvider, useAppLogic } from './app-logic'
 function App() {
   const {
     isSyncing,
-    votes,
-    selectedVote,
+    intents,
+    selectedIntent,
     actions,
-    selectVote,
-    newVotePanel,
-    selectedVotePanel,
+    selectIntent,
+    newIntentPanel,
+    selectedIntentPanel,
   } = useAppLogic()
 
 
@@ -31,23 +29,18 @@ function App() {
         <AppLayout
           title="Approvals"
         >
-          {votes.length > 0 ? (
-            <Votes votes={votes} onSelectVote={selectVote} />
+          {intents.length > 0 ? (
+            <Votes intents={intents} onSelectIntent={selectIntent} />
           ) : (
-            !isSyncing && <EmptyState onActivate={newVotePanel.requestOpen} />
+            !isSyncing && <EmptyState onActivate={newIntentPanel.requestOpen} />
           )}
         </AppLayout>
 
         <VotePanel
-          vote={selectedVote}
-          onExecute={actions.execute}
-          onVote={actions.vote}
-          panelState={selectedVotePanel}
-        />
-
-        <NewVotePanel
-          onCreateVote={actions.createVote}
-          panelState={newVotePanel}
+          intent={selectedIntent}
+          onApprove={actions.approve}
+          onReject={actions.reject}
+          panelState={selectedIntentPanel}
         />
       </Main>
     </div>

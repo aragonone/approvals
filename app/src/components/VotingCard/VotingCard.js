@@ -33,22 +33,15 @@ function getOptions(yea, nay, connectedAccountVote) {
 }
 
 const VotingCard = React.memo(
-  ({ vote, onOpen }) => {
-    const { voteId, connectedAccountVote } = vote
-    const { votingPower, yea, nay } = vote.numData
-    const { endDate, open, metadata, description } = vote.data
+  ({ intent, onOpen }) => {
+    const { intentId, connectedAccountIntent } = intent
+    const { description } = intent.data
 
     const handleOpen = useCallback(() => {
-      onOpen(voteId)
-    }, [voteId, onOpen])
+      onOpen(intentId)
+    }, [intentId, onOpen])
 
-    const options = useMemo(() => getOptions(yea, nay, connectedAccountVote), [
-      yea,
-      nay,
-      connectedAccountVote,
-    ])
-
-    const action = isVoteAction(vote)
+    const action = isVoteAction(intent)
 
     return (
       <section
@@ -59,27 +52,16 @@ const VotingCard = React.memo(
         `}
       >
         <Header>
-          {open ? (
-            <Timer end={endDate} maxUnits={4} />
-          ) : (
-            <PastDate
-              dateTime={format(endDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}
-            >
-              {format(endDate, 'EEE MMM dd yyyy HH:mm')}
-            </PastDate>
-          )}
-
-          {open ? null : <VoteStatus vote={vote} cardStyle />}
+          <VoteStatus intent={intent} cardStyle />
         </Header>
         <Card>
           <Content>
             <Label>
-              <Text color={theme.textTertiary}>#{voteId} </Text>
+              <Text color={theme.textTertiary}>#{intentId} </Text>
               <span>
-                <VoteText text={description || metadata} />
+                <VoteText text={description} />
               </span>
             </Label>
-            <VotingOptions options={options} votingPower={votingPower} />
           </Content>
           <div
             css={`
@@ -105,19 +87,12 @@ const VotingCard = React.memo(
     )
   },
   (prevProps, nextProps) => {
-    const prevVote = prevProps.vote
-    const nextVote = nextProps.vote
+    const prevIntent = prevProps.intent
+    const nextIntent = nextProps.intent
     return (
       prevProps.onVote === nextProps.onVote &&
-      prevVote.voteId === nextVote.voteId &&
-      prevVote.connectedAccountVote === nextVote.connectedAccountVote &&
-      prevVote.data.endDate === nextVote.data.endDate &&
-      prevVote.data.open === nextVote.data.open &&
-      prevVote.data.metadata === nextVote.data.metadata &&
-      prevVote.data.description === nextVote.data.description &&
-      prevVote.numData.votingPower === nextVote.numData.votingPower &&
-      prevVote.numData.yea === nextVote.numData.yea &&
-      prevVote.numData.nay === nextVote.numData.nay
+      prevIntent.intentId=== nextIntent.intentId &&
+      prevIntent.connectedAccountIntent === nextIntent.connectedAccountIntent
     )
   }
 )

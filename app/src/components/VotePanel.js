@@ -15,9 +15,7 @@ import { useAppState, useConnectedAccount } from '@aragon/api-react'
 import LocalIdentityBadge from './LocalIdentityBadge/LocalIdentityBadge'
 import { format } from 'date-fns'
 import { VOTE_NAY, VOTE_YEA } from '../vote-types'
-import { round } from '../math-utils'
 import { pluralize } from '../utils'
-import { getQuorumProgress } from '../vote-utils'
 import { useExtendedVoteData } from '../vote-hooks'
 import VoteSummary from './VoteSummary'
 import VoteStatus from './VoteStatus'
@@ -31,7 +29,7 @@ const formatDate = date =>
 // styled-component `css` transform doesn’t play well with attached components.
 const Action = Info.Action
 
-const VotePanel = React.memo(({ panelState, vote, onExecute, onVote }) => (
+const VotePanel = React.memo(({ panelState, vote, onApprove, onReject }) => (
   <SidePanel
     title={
       vote ? `Vote #${vote.voteId} (${vote.data.open ? 'Open' : 'Closed'})` : ''
@@ -43,8 +41,8 @@ const VotePanel = React.memo(({ panelState, vote, onExecute, onVote }) => (
     {vote && (
       <VotePanelContent
         vote={vote}
-        onVote={onVote}
-        onExecute={onExecute}
+        onApprove={onApprove}
+        onReject={onReject}
         panelOpened={panelState.didOpen}
       />
     )}
@@ -52,28 +50,22 @@ const VotePanel = React.memo(({ panelState, vote, onExecute, onVote }) => (
 ))
 
 const VotePanelContent = React.memo(
-  ({ onVote, onExecute, panelOpened, vote }) => {
+  ({ onReject, onApprove, panelOpened, vote: intent }) => {
     const { tokenDecimals, tokenSymbol } = useAppState()
 
-    const handleVoteNo = useCallback(() => {
-      onVote(vote.voteId, VOTE_NAY)
-    }, [onVote, vote.voteId])
+    const handleReject = useCallback(() => {
+      onReject(intent.voteId)
+    }, [onReject, intent.voteId])
 
-    const handleVoteYes = useCallback(() => {
-      onVote(vote.voteId, VOTE_YEA)
-    }, [onVote, vote.voteId])
+    const handleApprove = useCallback(() => {
+      onApprove(intent.voteId)
+    }, [onApprove, intent.voteId])
 
-    const handleExecute = useCallback(() => {
-      onExecute(vote.voteId)
-    }, [onExecute, vote.voteId])
-
-    if (!vote) {
+    if (!intent) {
       return null
     }
 
-    const { creator, endDate, open, metadata, description } = vote.data
-    const { minAcceptQuorum } = vote.numData
-    const quorumProgress = getQuorumProgress(vote)
+    const { submitter, description } = intent.data
 
     return (
       <React.Fragment>
@@ -82,32 +74,20 @@ const VotePanelContent = React.memo(
             <h2>
               <Label>{open ? 'Time Remaining' : 'Status'}</Label>
             </h2>
-            <div>
-              {open ? (
-                <Timer end={endDate} maxUnits={3} />
-              ) : (
-                <VoteStatus vote={vote} />
-              )}
-            </div>
-            <VoteSuccess vote={vote} css="margin-top: 10px" />
+            {/*<VoteSuccess vote={intent} css="margin-top: 10px" />*/}
           </div>
           <div>
             <h2>
               <Label>Quorum progress</Label>
             </h2>
-            <div>
-              {round(quorumProgress * 100, 2)}%{' '}
-              <Text size="small" color={theme.textSecondary}>
-                ({round(minAcceptQuorum * 100, 2)}% needed)
-              </Text>
-            </div>
-            <SummaryBar
-              css="margin-top: 10px"
-              positiveSize={quorumProgress}
-              requiredSize={minAcceptQuorum}
-              show={panelOpened}
-              compact
-            />
+            <div></div>
+            {/*<SummaryBar*/}
+            {/*  css="margin-top: 10px"*/}
+            {/*  positiveSize={quorumProgress}*/}
+            {/*  requiredSize={minAcceptQuorum}*/}
+            {/*  show={panelOpened}*/}
+            {/*  compact*/}
+            {/*/>*/}
           </div>
         </SidePanelSplit>
         <Part>
@@ -134,7 +114,7 @@ const VotePanelContent = React.memo(
                   hyphens: auto;
                 `}
               >
-                <VoteText text={metadata} />
+                {/*<VoteText text={metadata} />*/}
               </p>
             </React.Fragment>
           )}
@@ -150,23 +130,22 @@ const VotePanelContent = React.memo(
               align-items: center;
             `}
           >
-            <LocalIdentityBadge entity={creator} />
+            <LocalIdentityBadge entity={submitter} />
           </div>
         </Part>
         <SidePanelSeparator />
 
         <VoteSummary
-          vote={vote}
+          vote={intent}
           tokenSymbol={tokenSymbol}
           tokenDecimals={tokenDecimals}
           ready={panelOpened}
         />
 
         <VotePanelContentActions
-          onExecute={handleExecute}
-          onVoteNo={handleVoteNo}
-          onVoteYes={handleVoteYes}
-          vote={vote}
+          onReject={handleReject}
+          onApprove={handleApprove}
+          vote={intent}
         />
       </React.Fragment>
     )
@@ -174,28 +153,14 @@ const VotePanelContent = React.memo(
 )
 
 const VotePanelContentActions = React.memo(
-  ({ vote, onVoteYes, onVoteNo, onExecute }) => {
+  ({ vote, onApprove, onReject }) => {
     const connectedAccount = useConnectedAccount()
-    const { canUserVote, canExecute, userBalance } = useExtendedVoteData(vote)
+    const { canUserVote, userBalance } = useExtendedVoteData(vote)
     const [changeVote, setChangeVote] = useState(false)
 
     const handleChangeVote = useCallback(() => setChangeVote(true), [])
 
     const hasVoted = [VOTE_YEA, VOTE_NAY].includes(vote.connectedAccountVote)
-
-    if (canExecute) {
-      return (
-        <div>
-          <SidePanelSeparator />
-          <ButtonsContainer>
-            <Button mode="strong" wide onClick={onExecute}>
-              Execute vote
-            </Button>
-          </ButtonsContainer>
-          <Action>Executing this vote is required to enact it.</Action>
-        </div>
-      )
-    }
 
     if (canUserVote && hasVoted && !changeVote) {
       return (
@@ -231,17 +196,17 @@ const VotePanelContentActions = React.memo(
               mode="strong"
               emphasis="positive"
               wide
-              onClick={onVoteYes}
+              onClick={onApprove}
             >
-              Yes
+              Approve
             </VotingButton>
             <VotingButton
               mode="strong"
               emphasis="negative"
               wide
-              onClick={onVoteNo}
+              onClick={onReject}
             >
-              No
+              Reject
             </VotingButton>
           </ButtonsContainer>
           <Action

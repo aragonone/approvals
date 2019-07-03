@@ -1,12 +1,10 @@
-import { isBefore } from 'date-fns'
 import {
   VOTE_ABSENT,
   VOTE_YEA,
   VOTE_NAY,
-  VOTE_STATUS_ONGOING,
-  VOTE_STATUS_REJECTED,
-  VOTE_STATUS_ACCEPTED,
-  VOTE_STATUS_EXECUTED,
+  INTENT_STATUS_PENDING,
+  INTENT_STATUS_REJECTED,
+  INTENT_STATUS_APPROVED,
 } from './vote-types'
 
 const EMPTY_SCRIPT = '0x00000001'
@@ -19,25 +17,15 @@ export function getAccountVote(account, voters) {
   return voters[account] || VOTE_ABSENT
 }
 
-export function isVoteOpen(vote, date) {
-  const { executed, endDate } = vote.data
-  // Open if not executed and date is still before end date
-  return !executed && isBefore(date, endDate)
+export function isIntentPending(intent) {
+  const { data: { status } } = intent
+  return status === 'pending'
 }
 
-export const getQuorumProgress = ({ numData: { yea, votingPower } }) =>
-  yea / votingPower
-
-export function getVoteStatus(vote, pctBase) {
-  if (vote.data.executed) {
-    return VOTE_STATUS_EXECUTED
-  }
-  if (vote.data.open) {
-    return VOTE_STATUS_ONGOING
-  }
-  return getVoteSuccess(vote, pctBase)
-    ? VOTE_STATUS_ACCEPTED
-    : VOTE_STATUS_REJECTED
+export function getIntentStatus(intent) {
+  if (intent.data.status === 'approved') return INTENT_STATUS_APPROVED
+  if (intent.data.status === 'rejected') return INTENT_STATUS_REJECTED
+  return INTENT_STATUS_PENDING
 }
 
 export function getVoteSuccess(vote, pctBase) {
