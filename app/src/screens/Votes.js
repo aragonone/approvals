@@ -11,7 +11,7 @@ const Votes = React.memo(({ intents, onSelectIntent }) => {
   const pendingIntents = sortedIntents.filter(intent => intent.data.status === 'pending')
   const closedIntents = sortedIntents.filter(intent => !pendingIntents.includes(intent))
   const intentGroups = [['Pending intents', pendingIntents], ['Past intents', closedIntents]]
-
+  console.log("VVVVVVVVVVVVVVV", intents, intentGroups);
   return (
     <React.Fragment>
       {intentGroups.map(([groupName, intents]) =>

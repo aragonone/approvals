@@ -1,11 +1,11 @@
 import {
-  VOTE_ABSENT,
-  VOTE_YEA,
-  VOTE_NAY,
+  INTENT_PENDING,
+  INTENT_APPROVE,
+  INTENT_REJECT,
   INTENT_STATUS_PENDING,
   INTENT_STATUS_REJECTED,
   INTENT_STATUS_APPROVED,
-} from './vote-types'
+} from './intent-types'
 
 const EMPTY_SCRIPT = '0x00000001'
 
@@ -14,7 +14,7 @@ export function isVoteAction(vote) {
 }
 
 export function getAccountVote(account, voters) {
-  return voters[account] || VOTE_ABSENT
+  return voters[account] || INTENT_PENDING
 }
 
 export function isIntentPending(intent) {
@@ -52,12 +52,12 @@ export function getVoteSuccess(vote, pctBase) {
 // https://solidity.readthedocs.io/en/latest/frequently-asked-questions.html#if-i-return-an-enum-i-only-get-integer-values-in-web3-js-how-to-get-the-named-values
 export function voteTypeFromContractEnum(value) {
   if (value === '1') {
-    return VOTE_YEA
+    return INTENT_APPROVE
   }
   if (value === '2') {
-    return VOTE_NAY
+    return INTENT_REJECT
   }
-  return VOTE_ABSENT
+  return INTENT_PENDING
 }
 
 // Get the user balance that can be used on a given vote.

@@ -7,7 +7,7 @@ import {
   isIntentPending,
 } from './vote-utils'
 import { usePromise } from './utils-hooks'
-import { VOTE_ABSENT } from './vote-types'
+import { INTENT_PENDING } from './intent-types'
 
 
 // Get the votes array ready to be used in the app.
@@ -27,7 +27,7 @@ export function useIntents() {
         description: intent.data.description || '',
         open: pendingStates[i],
       },
-      connectedAccountIntents: connectedAccountIntents[intent.intentId] || VOTE_ABSENT,
+      connectedAccountIntents: connectedAccountIntents[intent.intentId] || INTENT_PENDING,
     }))
   }, [intents, connectedAccountIntents, pendingStatesKey])
 }

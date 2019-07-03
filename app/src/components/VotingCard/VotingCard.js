@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { format } from 'date-fns'
 import { Badge, Timer, Text, Button, theme } from '@aragon/ui'
-import { VOTE_YEA, VOTE_NAY } from '../../vote-types'
+import { INTENT_APPROVE, INTENT_REJECT } from '../../intent-types'
 import VotingOptions from './VotingOptions'
 import VoteText from '../VoteText'
 import VoteStatus from '../VoteStatus'
@@ -14,7 +14,7 @@ function getOptions(yea, nay, connectedAccountVote) {
       label: (
         <OptionLabel
           label="Yes"
-          isConnectedAccount={connectedAccountVote === VOTE_YEA}
+          isConnectedAccount={connectedAccountVote === INTENT_APPROVE}
         />
       ),
       power: yea,
@@ -23,7 +23,7 @@ function getOptions(yea, nay, connectedAccountVote) {
       label: (
         <OptionLabel
           label="No"
-          isConnectedAccount={connectedAccountVote === VOTE_NAY}
+          isConnectedAccount={connectedAccountVote === INTENT_REJECT}
         />
       ),
       power: nay,
@@ -42,7 +42,7 @@ const VotingCard = React.memo(
     }, [intentId, onOpen])
 
     const action = isVoteAction(intent)
-
+    //TODO: On VoteText: change string for description variable when ready
     return (
       <section
         css={`
@@ -59,7 +59,7 @@ const VotingCard = React.memo(
             <Label>
               <Text color={theme.textTertiary}>#{intentId} </Text>
               <span>
-                <VoteText text={description} />
+                <VoteText text={"Intent description"} />
               </span>
             </Label>
           </Content>

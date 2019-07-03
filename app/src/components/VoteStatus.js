@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { theme, IconTime, IconCross, IconCheck } from '@aragon/ui'
 import { getIntentStatus } from '../vote-utils'
-import { INTENT_STATUS_PENDING, INTENT_STATUS_REJECTED, INTENT_STATUS_APPROVED } from '../vote-types'
+import { INTENT_STATUS_PENDING, INTENT_STATUS_REJECTED, INTENT_STATUS_APPROVED } from '../intent-types'
 
 const ATTRIBUTES = {
   [INTENT_STATUS_PENDING]: {

@@ -6,7 +6,6 @@ import {
   Info,
   SafeLink,
   SidePanelSeparator,
-  SidePanelSplit,
   SidePanel,
   Text,
   theme,
@@ -14,10 +13,9 @@ import {
 import { useAppState, useConnectedAccount } from '@aragon/api-react'
 import LocalIdentityBadge from './LocalIdentityBadge/LocalIdentityBadge'
 import { format } from 'date-fns'
-import { VOTE_NAY, VOTE_YEA } from '../vote-types'
+import { INTENT_REJECT, INTENT_APPROVE } from '../intent-types'
 import { pluralize } from '../utils'
 import { useExtendedVoteData } from '../vote-hooks'
-import VoteSummary from './VoteSummary'
 import VoteStatus from './VoteStatus'
 import VoteSuccess from './VoteSuccess'
 import VoteText from './VoteText'
@@ -29,18 +27,18 @@ const formatDate = date =>
 // styled-component `css` transform doesn’t play well with attached components.
 const Action = Info.Action
 
-const VotePanel = React.memo(({ panelState, vote, onApprove, onReject }) => (
+const VotePanel = React.memo(({ panelState, intent, onApprove, onReject }) => (
   <SidePanel
     title={
-      vote ? `Vote #${vote.voteId} (${vote.data.open ? 'Open' : 'Closed'})` : ''
+      intent ? `Intent #${intent.intentId} ` : ''
     }
     opened={panelState.visible}
     onClose={panelState.requestClose}
     onTransitionEnd={panelState.onTransitionEnd}
   >
-    {vote && (
+    {intent && (
       <VotePanelContent
-        vote={vote}
+        intent={intent}
         onApprove={onApprove}
         onReject={onReject}
         panelOpened={panelState.didOpen}
@@ -50,46 +48,27 @@ const VotePanel = React.memo(({ panelState, vote, onApprove, onReject }) => (
 ))
 
 const VotePanelContent = React.memo(
-  ({ onReject, onApprove, panelOpened, vote: intent }) => {
+  ({ onReject, onApprove, panelOpened, intent: intent }) => {
     const { tokenDecimals, tokenSymbol } = useAppState()
 
     const handleReject = useCallback(() => {
-      onReject(intent.voteId)
-    }, [onReject, intent.voteId])
+      onReject(intent.intentId)
+    }, [onReject, intent.intentId])
 
     const handleApprove = useCallback(() => {
-      onApprove(intent.voteId)
-    }, [onApprove, intent.voteId])
+      onApprove(intent.intentId)
+    }, [onApprove, intent.intentId])
 
     if (!intent) {
       return null
     }
 
-    const { submitter, description } = intent.data
-
+    const { submitter } = intent.data
+    const description = "Intent description"
     return (
       <React.Fragment>
-        <SidePanelSplit>
-          <div>
-            <h2>
-              <Label>{open ? 'Time Remaining' : 'Status'}</Label>
-            </h2>
-            {/*<VoteSuccess vote={intent} css="margin-top: 10px" />*/}
-          </div>
-          <div>
-            <h2>
-              <Label>Quorum progress</Label>
-            </h2>
-            <div></div>
-            {/*<SummaryBar*/}
-            {/*  css="margin-top: 10px"*/}
-            {/*  positiveSize={quorumProgress}*/}
-            {/*  requiredSize={minAcceptQuorum}*/}
-            {/*  show={panelOpened}*/}
-            {/*  compact*/}
-            {/*/>*/}
-          </div>
-        </SidePanelSplit>
+        <VoteStatus intent={intent}/><br/>
+        <SidePanelSeparator />
         <Part>
           {description && (
             <React.Fragment>
@@ -101,28 +80,10 @@ const VotePanelContent = React.memo(
               </p>
             </React.Fragment>
           )}
-          {metadata && (
-            <React.Fragment>
-              <h2>
-                <Label>Question</Label>
-              </h2>
-              <p
-                css={`
-                  max-width: 100%;
-                  overflow: hidden;
-                  word-break: break-all;
-                  hyphens: auto;
-                `}
-              >
-                {/*<VoteText text={metadata} />*/}
-              </p>
-            </React.Fragment>
-          )}
         </Part>
-        <SidePanelSeparator />
         <Part>
           <h2>
-            <Label>Created By</Label>
+            <Label>Submitted By</Label>
           </h2>
           <div
             css={`
@@ -135,17 +96,10 @@ const VotePanelContent = React.memo(
         </Part>
         <SidePanelSeparator />
 
-        <VoteSummary
-          vote={intent}
-          tokenSymbol={tokenSymbol}
-          tokenDecimals={tokenDecimals}
-          ready={panelOpened}
-        />
-
         <VotePanelContentActions
           onReject={handleReject}
           onApprove={handleApprove}
-          vote={intent}
+          intent={intent}
         />
       </React.Fragment>
     )
@@ -153,41 +107,10 @@ const VotePanelContent = React.memo(
 )
 
 const VotePanelContentActions = React.memo(
-  ({ vote, onApprove, onReject }) => {
+  ({ intent, onApprove, onReject }) => {
     const connectedAccount = useConnectedAccount()
-    const { canUserVote, userBalance } = useExtendedVoteData(vote)
-    const [changeVote, setChangeVote] = useState(false)
 
-    const handleChangeVote = useCallback(() => setChangeVote(true), [])
-
-    const hasVoted = [VOTE_YEA, VOTE_NAY].includes(vote.connectedAccountVote)
-
-    if (canUserVote && hasVoted && !changeVote) {
-      return (
-        <div>
-          <SidePanelSeparator />
-          <ButtonsContainer>
-            <Button mode="strong" wide onClick={handleChangeVote}>
-              Change my vote
-            </Button>
-          </ButtonsContainer>
-          <Action>
-            <p>
-              You voted {vote.connectedAccountVote === VOTE_YEA ? 'yes' : 'no'}{' '}
-              with{' '}
-              {userBalance === -1
-                ? '…'
-                : pluralize(userBalance, '$ token', '$ tokens')}
-              , since it was your balance when the vote was created (
-              {formatDate(vote.data.startDate)}
-              ).
-            </p>
-          </Action>
-        </div>
-      )
-    }
-
-    if (canUserVote) {
+    if (intent.data.status === 'pending') {
       return (
         <div>
           <SidePanelSeparator />
@@ -218,15 +141,6 @@ const VotePanelContentActions = React.memo(
           >
             {connectedAccount ? (
               <div>
-                <p>
-                  You will cast your vote with{' '}
-                  {userBalance === -1
-                    ? '… tokens'
-                    : pluralize(userBalance, '$ token', '$ tokens')}
-                  , since it was your balance when the vote was created (
-                  {formatDate(vote.data.startDate)}
-                  ).
-                </p>
                 <NoTokenCost />
               </div>
             ) : (
