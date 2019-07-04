@@ -36,7 +36,7 @@
     "test": "TRUFFLE_TEST=true npm run ganache-cli:test",
     "test:gas": "GAS_REPORTER=true npm run test",
     "coverage": "SOLIDITY_COVERAGE=true npm run ganache-cli:test",
-    "truffle:dev": "truffle dev",
+    "deploy:local": "aragon run --template ApprovalsKit --template-init @ARAGON_ENS --reset",
     "ganache-cli:test": "./node_modules/@aragon/test-helpers/ganache-cli.sh",
     "prepare": "node ./scripts/prepare.js",
     "install:frontend": "cd app && npm install",
