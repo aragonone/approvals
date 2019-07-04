@@ -10,7 +10,7 @@
 
 pragma solidity 0.4.24;
 
-import "../../Approvals.sol";
+import "../Approvals.sol";
 import "@aragon/os/contracts/apm/Repo.sol";
 import "@aragon/os/contracts/apm/APMNamehash.sol";
 import "@aragon/os/contracts/factory/DAOFactory.sol";
