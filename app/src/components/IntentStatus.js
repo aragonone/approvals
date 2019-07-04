@@ -14,7 +14,7 @@ const ATTRIBUTES = {
   [INTENT_STATUS_APPROVED]: {
     label: 'Approved',
     Icon: IconCheck,
-    color: theme.textTertiary,
+    color: theme.positive,
     bold: true,
   },
   [INTENT_STATUS_REJECTED]: {

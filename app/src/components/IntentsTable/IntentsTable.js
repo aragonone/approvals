@@ -1,8 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Badge, Text, unselectable, breakpoint } from '@aragon/ui'
+import {
+  Badge,
+  Text,
+  Table,
+  TableRow,
+  TableHeader,
+  unselectable,
+  breakpoint
+} from "@aragon/ui"
 
-const VotingCardGroup = ({ title, count, children }) => (
+const IntentsTable = ({ title, count, children }) => (
   <Main>
     <Title>
       <Text size="large" weight="bold">
@@ -12,7 +20,18 @@ const VotingCardGroup = ({ title, count, children }) => (
         <Badge.Info>{count}</Badge.Info>
       </TitleBadge>
     </Title>
-    <Grid>{children}</Grid>
+    <Table
+      header={
+        <TableRow>
+          <TableHeader title="Description" />
+          <TableHeader title="Status" />
+          <TableHeader title="Detail" />
+          <TableHeader />
+        </TableRow>
+      }
+    >
+      {children}
+    </Table>
   </Main>
 )
 
@@ -49,4 +68,4 @@ const TitleBadge = styled.span`
   align-items: center;
 `
 
-export default VotingCardGroup
+export default IntentsTable

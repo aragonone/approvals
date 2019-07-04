@@ -1,6 +1,6 @@
 import React from 'react'
-import VotingCard from '../components/VotingCard/VotingCard'
-import VotingCardGroup from '../components/VotingCard/VotingCardGroup'
+import IntentRow from '../components/IntentsTable/IntentRow'
+import IntentsTable from '../components/IntentsTable/IntentsTable'
 
 const Intents = React.memo(({ intents, onSelectIntent }) => {
   const sortedIntents = intents.sort((a, b) => {
@@ -16,15 +16,15 @@ const Intents = React.memo(({ intents, onSelectIntent }) => {
     <React.Fragment>
       {intentGroups.map(([groupName, intents]) =>
         intents.length ? (
-          <VotingCardGroup
+          <IntentsTable
             title={groupName}
             count={intents.length}
             key={groupName}
           >
             {intents.map(intent => (
-              <VotingCard key={intent.intentId} intent={intent} onOpen={onSelectIntent} />
+              <IntentRow key={intent.intentId} intent={intent} onOpen={onSelectIntent} />
             ))}
-          </VotingCardGroup>
+          </IntentsTable>
         ) : null
       )}
     </React.Fragment>
