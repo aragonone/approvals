@@ -1,0 +1,19 @@
+# aragon-cli
+artifact.json
+
+# Dependencies
+node_modules
+
+# coverage
+coverageEnv
+coverage.json
+allFiredEvents
+scTopics
+
+# truffle build artifacts
+abi
+build
+
+# lock files
+yarn.lock
+package-lock.json
