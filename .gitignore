@@ -11,8 +11,8 @@ allFiredEvents
 scTopics
 
 # truffle build artifacts
-abi
-build
+/abi
+/build
 
 # lock files
 yarn.lock
