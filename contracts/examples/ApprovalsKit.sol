@@ -79,9 +79,7 @@ contract ApprovalsKit is APMNamehash {
 
         acl.createPermission(this, tokenManager, tokenManager.MINT_ROLE(), this);
         tokenManager.mint(root, 1e18);
-        acl.grantPermission(voting1, tokenManager, tokenManager.MINT_ROLE());
-        acl.grantPermission(voting2, tokenManager, tokenManager.MINT_ROLE());
-        acl.grantPermission(voting3, tokenManager, tokenManager.MINT_ROLE());
+        acl.grantPermission(root, tokenManager, tokenManager.MINT_ROLE());
         acl.revokePermission(this, tokenManager, tokenManager.MINT_ROLE());
         acl.setPermissionManager(root, tokenManager, tokenManager.MINT_ROLE());
 
