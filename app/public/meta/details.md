@@ -1,7 +1,8 @@
-The Voting app is used to create and participate in votes. Votes can be linked to an action, such as issuing a new token or transfering funds, or be purely informative.
+The Approvals app is used to curate potential actions on a DAO. It allows people to submit intents based on a role, and 
+forward intents in case they are approved, or drop them if rejected. Useful for when an organization wants to allow 
+people to submit desired actions publicly, while having a curation stage before moving forward.
 
 **Features**
-- Create a new informative vote.
-- Vote "yes" or "no" on open votes.
-- See details about open and past votes, including how many tokens have voted and how much time is left before a vote is over.
-- Give the Voting app permission to perform actions in other apps so those actions have to be approved by a tokenholder vote before they can be executed.
+- Approve or reject pending intents.
+- See details about pending and solved intents.
+- Give the Approvals app permission to perform actions in other apps so those actions have to be approved before being executed.

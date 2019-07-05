@@ -1,17 +1,14 @@
 function appStateReducer(state) {
-  console.log(state) // TODO: remove afterwards
-
   if (!state) {
     return { ...state, ready: false }
   }
 
-  const { intents, connectedAccountIntents } = state
+  const { intents } = state
 
   return {
     ...state,
     ready: true,
-    intents: intents ? intents : [],
-    connectedAccountIntents: connectedAccountIntents || {},
+    intents: intents || [],
   }
 }
 

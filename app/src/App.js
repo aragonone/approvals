@@ -7,7 +7,6 @@ import IntentPanel from './components/IntentPanel'
 import AppLayout from './components/AppLayout'
 
 import { IdentityProvider } from './identity-manager'
-import { SettingsProvider } from './vote-settings-manager'
 import { AppLogicProvider, useAppLogic } from './app-logic'
 
 function App() {
@@ -24,9 +23,7 @@ function App() {
     <div css="min-width: 320px">
       <Main assetsUrl="./aragon-ui">
         <SyncIndicator visible={isSyncing} />
-        <AppLayout
-          title="Approvals"
-        >
+        <AppLayout title="Approvals">
           {intents.length > 0 ? (
             <IntentsScreen intents={intents} onSelectIntent={selectIntent} />
           ) : (
@@ -48,9 +45,7 @@ function App() {
 export default () => (
   <AppLogicProvider>
     <IdentityProvider>
-      <SettingsProvider>
-        <App />
-      </SettingsProvider>
+      <App />
     </IdentityProvider>
   </AppLogicProvider>
 )

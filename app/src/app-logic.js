@@ -1,5 +1,5 @@
 import appStateReducer from './app-state-reducer'
-import { useIntents } from './vote-hooks'
+import { useIntents } from './intent-hooks'
 import { usePanelState } from './utils-hooks'
 import { AragonApi, useApi, useAppState } from '@aragon/api-react'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'

@@ -3,6 +3,7 @@ import { EMPTY_CALLSCRIPT } from './evmscript-utils'
 
 const app = new Aragon()
 
+// eslint-disable-next-line no-unused-vars
 let connectedAccount
 
 /*
@@ -40,7 +41,10 @@ retryEvery(retry => {
     .toPromise()
     .then(initialize)
     .catch(err => {
-      console.error('Could not start background script execution due to the contract not loading the token:', err)
+      console.error(
+        'Could not start background script execution due to the contract not loading the token:',
+        err
+      )
       retry()
     })
 })
@@ -74,7 +78,7 @@ async function initialize() {
 const initState = async cachedState => {
   return {
     ...cachedState,
-    isSyncing: true
+    isSyncing: true,
   }
 }
 

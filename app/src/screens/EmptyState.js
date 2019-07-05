@@ -6,7 +6,7 @@ import emptyIcon from '../assets/empty-card-icon.svg'
 const EmptyState = ({ onActivate }) => (
   <Main>
     <EmptyStateCard
-      title="There are no votes to approve yet"
+      title="There are no intents to approve yet"
       icon={<img src={emptyIcon} alt="" />}
     />
   </Main>

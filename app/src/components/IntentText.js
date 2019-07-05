@@ -4,8 +4,7 @@ import { transformAddresses } from '../web3-utils'
 import AutoLink from '../components/AutoLink'
 import LocalIdentityBadge from '../components/LocalIdentityBadge/LocalIdentityBadge'
 
-// Render a text associated to a vote.
-// Usually vote.data.metadata and vote.data.description.
+// Render a text associated to an intent.
 const IntentText = React.memo(
   ({ text = '' }) => {
     // If there is no text, the component doesn’t render anything.

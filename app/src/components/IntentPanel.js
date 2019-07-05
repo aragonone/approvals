@@ -1,35 +1,18 @@
-import React, { useState, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import {
-  Button,
-  Timer,
-  Info,
-  SafeLink,
-  SidePanelSeparator,
-  SidePanel,
-  Text,
-  theme,
-} from '@aragon/ui'
-import { useAppState, useConnectedAccount } from '@aragon/api-react'
+import { Button, Info, SafeLink, SidePanelSeparator, SidePanel, Text, theme } from '@aragon/ui'
+import { useConnectedAccount } from '@aragon/api-react'
 import LocalIdentityBadge from './LocalIdentityBadge/LocalIdentityBadge'
-import { format } from 'date-fns'
-import { INTENT_REJECT, INTENT_APPROVE } from '../intent-types'
-import { pluralize } from '../utils'
-import { useExtendedVoteData } from '../vote-hooks'
+
 import IntentStatus from './IntentStatus'
 import IntentText from './IntentText'
-
-const formatDate = date =>
-  `${format(date, 'dd/MM/yy')} at ${format(date, 'HH:mm')} UTC`
 
 // styled-component `css` transform doesn’t play well with attached components.
 const Action = Info.Action
 
 const IntentPanel = React.memo(({ panelState, intent, onApprove, onReject }) => (
   <SidePanel
-    title={
-      intent ? `Intent #${intent.intentId} ` : ''
-    }
+    title={ intent ? `Intent #${intent.intentId} ` : '' }
     opened={panelState.visible}
     onClose={panelState.requestClose}
     onTransitionEnd={panelState.onTransitionEnd}
@@ -46,8 +29,7 @@ const IntentPanel = React.memo(({ panelState, intent, onApprove, onReject }) => 
 ))
 
 const IntentPanelContent = React.memo(
-  ({ onReject, onApprove, panelOpened, intent: intent }) => {
-    const { tokenDecimals, tokenSymbol } = useAppState()
+  ({ onReject, onApprove, panelOpened, intent }) => {
 
     const handleReject = useCallback(() => {
       onReject(intent.intentId)
@@ -61,11 +43,11 @@ const IntentPanelContent = React.memo(
       return null
     }
 
-    const { submitter } = intent.data
-    const description = "Intent description"
+    const { submitter, description } = intent.data
     return (
       <React.Fragment>
-        <IntentStatus intent={intent}/><br/>
+        <IntentStatus intent={intent}/>
+        <br/>
         <SidePanelSeparator />
         <Part>
           {description && (
@@ -113,22 +95,22 @@ const IntentPanelContentActions = React.memo(
         <div>
           <SidePanelSeparator />
           <ButtonsContainer>
-            <VotingButton
+            <IntentButton
               mode="strong"
               emphasis="positive"
               wide
               onClick={onApprove}
             >
               Approve
-            </VotingButton>
-            <VotingButton
+            </IntentButton>
+            <IntentButton
               mode="strong"
               emphasis="negative"
               wide
               onClick={onReject}
             >
               Reject
-            </VotingButton>
+            </IntentButton>
           </ButtonsContainer>
           <Action
             css={`
@@ -188,7 +170,7 @@ const ButtonsContainer = styled.div`
   padding: 30px 0 20px;
 `
 
-const VotingButton = styled(Button)`
+const IntentButton = styled(Button)`
   width: 50%;
   &:first-child {
     margin-right: 10px;
