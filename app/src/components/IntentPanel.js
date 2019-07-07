@@ -46,8 +46,8 @@ const IntentPanelContent = React.memo(
     const { submitter, description } = intent.data
     return (
       <React.Fragment>
-        <IntentStatus intent={intent}/>
-        <br/>
+        <IntentStatus intent={intent} />
+        <br />
         <SidePanelSeparator />
         <Part>
           {description && (

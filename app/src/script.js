@@ -1,5 +1,5 @@
 import Aragon, { events } from '@aragon/api'
-import { EMPTY_CALLSCRIPT } from './evmscript-utils'
+import { EMPTY_CALLSCRIPT, stringifyForwardingPath } from './evmscript-utils'
 
 const app = new Aragon()
 
@@ -93,22 +93,42 @@ async function updateConnectedAccount(state, { account }) {
   return {
     ...state,
     // fetch all the intents casted by the connected account
-    connectedAccountIntents: state.intents ? await getAccountIntents({ connectedAccount: account, intents: state.intents }) : {},
+    connectedAccountIntents: state.intents
+      ? await getAccountIntents({
+          connectedAccount: account,
+          intents: state.intents,
+        })
+      : {},
   }
 }
 
 async function approveIntent(state, { intentId, moderator }) {
-  const transform = ({ data, ...intent }) => ({ ...intent, data: { ...data, status: 'approved', moderator }})
+  const transform = ({ data, ...intent }) => ({
+    ...intent,
+    data: { ...data, status: 'approved', moderator },
+  })
   return updateState(state, intentId, transform)
 }
 
 async function rejectIntent(state, { intentId, moderator }) {
-  const transform = ({ data, ...intent }) => ({ ...intent, data: { ...data, status: 'rejected', moderator }})
+  const transform = ({ data, ...intent }) => ({
+    ...intent,
+    data: { ...data, status: 'rejected', moderator },
+  })
   return updateState(state, intentId, transform)
 }
 
 async function submitIntent(state, { intentId, submitter }) {
-  const transform = ({ data, ...intent }) => ({ ...intent, data: { ...data, status: 'pending', submitter }})
+  const transform = async intent => {
+    return {
+      ...intent,
+      data: {
+        status: 'pending',
+        submitter,
+        ...(await loadIntentData(intentId)),
+      },
+    }
+  }
   return updateState(state, intentId, transform)
 }
 
@@ -130,16 +150,7 @@ async function loadIntentDescription(intent) {
 
   try {
     const path = await app.describeScript(intent.script).toPromise()
-
-    intent.description = path
-      ? path
-        .map(step => {
-          const identifier = step.identifier ? ` (${step.identifier})` : ''
-          const app = step.name ? `${step.name}${identifier}` : `${step.to}`
-          return `${app}: ${step.description || 'No description'}`
-        })
-        .join('\n')
-      : ''
+    intent.description = stringifyForwardingPath(path)
   } catch (error) {
     console.error('Error describing intent script', error)
     intent.description = 'Invalid script. The result cannot be executed.'
@@ -152,7 +163,7 @@ function loadIntentData(intentId) {
   return app
     .call('getIntent', intentId)
     .toPromise()
-    .then(intent => loadIntentDescription(marshallIntent(intent)))
+    .then(intentData => loadIntentDescription({ script: intentData[1] }))
 }
 
 async function updateIntents(intents, intentId, transform) {
@@ -177,9 +188,4 @@ async function updateState(state, intentId, transform) {
     ...state,
     intents: await updateIntents(intents, intentId, transform),
   }
-}
-
-// Apply transformations to an intent received from web3
-function marshallIntent({ state, script }) {
-  return { state, script }
 }

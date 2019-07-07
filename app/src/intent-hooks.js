@@ -7,15 +7,5 @@ export function useIntents() {
   const { intents } = useAppState()
   const pendingStates = (intents || []).map(i => isIntentPending(i))
   const pendingStatesKey = pendingStates.join('')
-
-  return useMemo(() => {
-    if (!intents) return []
-    return intents.map((intent) => ({
-      ...intent,
-      data: {
-        ...intent.data,
-        description: intent.data.description || 'Intent description',
-      }
-    }))
-  }, [intents, pendingStatesKey])
+  return useMemo(() => intents || [], [intents, pendingStatesKey])
 }
