@@ -1,11 +1,11 @@
 {
   "environments": {
     "default": {
-      "appName": "approvals.aragonpm.eth",
+      "appName": "approvals.open.aragonpm.eth",
       "network": "rpc"
     },
     "rinkeby": {
-      "appName": "approvals.aragonpm.eth",
+      "appName": "approvals.open.aragonpm.eth",
       "network": "rinkeby"
     }
   },
