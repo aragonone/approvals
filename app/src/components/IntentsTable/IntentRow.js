@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
-import { TableCell, TableRow, Text, Button, theme } from '@aragon/ui'
+import { TableCell, TableRow, Button, theme } from '@aragon/ui'
+
 import IntentText from '../IntentText'
 import IntentStatus from '../IntentStatus'
 
@@ -7,17 +8,15 @@ const IntentRow = React.memo(
   ({ intent, onOpen }) => {
     const { intentId } = intent
     const { description } = intent.data
-
     const handleOpen = useCallback(() => onOpen(intentId), [intentId, onOpen])
 
-    // TODO: On IntentText: change string for description variable when ready
     return (
       <TableRow onClick={handleOpen}>
         <TableCell>
-            <span color={theme.textTertiary}>#{intentId}</span>
+          <span color={theme.textTertiary}>#{intentId}</span>
         </TableCell>
         <TableCell>
-            <IntentText text={description} />
+          <IntentText text={description} />
         </TableCell>
         <TableCell>
           <IntentStatus intent={intent} />

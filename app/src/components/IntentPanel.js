@@ -5,28 +5,30 @@ import { useConnectedAccount } from '@aragon/api-react'
 import LocalIdentityBadge from './LocalIdentityBadge/LocalIdentityBadge'
 
 import IntentStatus from './IntentStatus'
-import IntentText from './IntentText'
+import IntentActions from './IntentActions'
 
 // styled-component `css` transform doesn’t play well with attached components.
 const Action = Info.Action
 
-const IntentPanel = React.memo(({ panelState, intent, onApprove, onReject }) => (
-  <SidePanel
-    title={ intent ? `Intent #${intent.intentId} ` : '' }
-    opened={panelState.visible}
-    onClose={panelState.requestClose}
-    onTransitionEnd={panelState.onTransitionEnd}
-  >
-    {intent && (
-      <IntentPanelContent
-        intent={intent}
-        onApprove={onApprove}
-        onReject={onReject}
-        panelOpened={panelState.didOpen}
-      />
-    )}
-  </SidePanel>
-))
+const IntentPanel = React.memo(
+  ({ panelState, intent, onApprove, onReject }) => (
+    <SidePanel
+      title={intent ? `Intent #${intent.intentId} ` : ''}
+      opened={panelState.visible}
+      onClose={panelState.requestClose}
+      onTransitionEnd={panelState.onTransitionEnd}
+    >
+      {intent && (
+        <IntentPanelContent
+          intent={intent}
+          onApprove={onApprove}
+          onReject={onReject}
+          panelOpened={panelState.didOpen}
+        />
+      )}
+    </SidePanel>
+  )
+)
 
 const IntentPanelContent = React.memo(
   ({ onReject, onApprove, panelOpened, intent }) => {
@@ -43,20 +45,20 @@ const IntentPanelContent = React.memo(
       return null
     }
 
-    const { submitter, description } = intent.data
+    const { submitter, actions } = intent.data
     return (
       <React.Fragment>
         <IntentStatus intent={intent} />
         <br />
         <SidePanelSeparator />
         <Part>
-          {description && (
+          {actions && (
             <React.Fragment>
               <h2>
                 <Label>Description</Label>
               </h2>
               <p>
-                <IntentText text={description} />
+                <IntentActions actions={actions} />
               </p>
             </React.Fragment>
           )}

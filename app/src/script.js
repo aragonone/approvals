@@ -1,5 +1,5 @@
 import Aragon, { events } from '@aragon/api'
-import { EMPTY_CALLSCRIPT, stringifyForwardingPath } from './evmscript-utils'
+import { EMPTY_CALLSCRIPT, describeForwardingPath } from './evmscript-utils'
 
 const app = new Aragon()
 
@@ -150,7 +150,8 @@ async function loadIntentDescription(intent) {
 
   try {
     const path = await app.describeScript(intent.script).toPromise()
-    intent.description = stringifyForwardingPath(path)
+    intent.actions = describeForwardingPath(path)
+    intent.description = intent.actions.map(action => action.description).join('\n')
   } catch (error) {
     console.error('Error describing intent script', error)
     intent.description = 'Invalid script. The result cannot be executed.'
